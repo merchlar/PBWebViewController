@@ -45,6 +45,10 @@
  */
 @property (assign, nonatomic) BOOL showsNavigationToolbar;
 
+/*A view that will be displayed full screen on the web view if the website failed to load */
+
+@property (nonatomic,strong) UIView *failedToLoadView;
+
 /**
  * Loads the given `URL`.
  * This is called automatically when the when the web view appears if a `URL` exists,

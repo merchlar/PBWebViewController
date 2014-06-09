@@ -165,8 +165,8 @@
                                                                            action:@selector(stopLoading)];
     
     self.reloadButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
-                                                                      target:self.webView
-                                                                      action:@selector(reload)];
+                                                                      target:self
+                                                                      action:@selector(reloadWebView)];
     
     self.backButton = [[UIBarButtonItem alloc] initWithImage:[self backButtonImage]
                                                        style:UIBarButtonItemStylePlain
@@ -217,6 +217,21 @@
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 }
 
+- (void)reloadWebView
+{
+    NSURL *url = self.webView.request.URL;
+    NSString *stringURL = url.absoluteString;
+    
+    if (stringURL==nil || [stringURL length]<1){
+        NSLog(@"Initial reload!");
+        [self load];
+        return;
+    }
+    
+    NSLog(@"Normal reload!");
+    [self.webView reload];
+}
+
 #pragma mark - Button actions
 
 - (void)action:(id)sender
@@ -256,6 +271,8 @@
 
 - (void)webViewDidStartLoad:(UIWebView *)webView
 {
+    [self.failedToLoadView removeFromSuperview];
+    
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     [self toggleState];
 }
@@ -269,6 +286,13 @@
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
 {
+    if (self.failedToLoadView != nil){
+        [self.failedToLoadView setFrame:webView.bounds];
+        [self.failedToLoadView setTranslatesAutoresizingMaskIntoConstraints:YES];
+        [self.failedToLoadView setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
+        [webView addSubview:self.failedToLoadView];
+    }
+    
     [self finishLoad];
 }
 
