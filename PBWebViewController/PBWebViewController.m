@@ -223,12 +223,11 @@
     NSString *stringURL = url.absoluteString;
     
     if (stringURL==nil || [stringURL length]<1){
-        NSLog(@"Initial reload!");
+        
         [self load];
         return;
     }
     
-    NSLog(@"Normal reload!");
     [self.webView reload];
 }
 
