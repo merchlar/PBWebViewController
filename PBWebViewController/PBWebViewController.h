@@ -49,6 +49,14 @@
 
 @property (nonatomic,strong) UIView *failedToLoadView;
 
+/*Hide toolbar at start*/
+
+@property (nonatomic,assign) BOOL hidesToolbarAtStart;
+
+/*Use website title for nav bar. Default: YES*/
+@property (nonatomic,assign) BOOL useWebsiteTitle;
+
+
 /**
  * Loads the given `URL`.
  * This is called automatically when the when the web view appears if a `URL` exists,
@@ -60,5 +68,11 @@
  * Clears the contents of the web view.
  */
 - (void)clear;
+
+/*
+ * Reloads webview taking into account
+ * that it may have failed at first
+ */
+- (void)reloadWebView;
 
 @end

@@ -46,6 +46,7 @@
 - (void)commonInit
 {
     _showsNavigationToolbar = YES;
+    _useWebsiteTitle = YES;
 }
 
 - (void)load
@@ -53,12 +54,10 @@
     NSURLRequest *request = [NSURLRequest requestWithURL:self.URL cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:4.0];
     [self.webView loadRequest:request];
     
-    if (self.navigationController.toolbarHidden) {
-        self.toolbarPreviouslyHidden = YES;
-        if (self.showsNavigationToolbar) {
-            [self.navigationController setToolbarHidden:NO animated:YES];
-        }
+    if (!self.hidesToolbarAtStart){
+        [self mayShowToolbar];
     }
+    
 }
 
 - (void)clear
@@ -86,6 +85,7 @@
 {
     [super viewWillAppear:animated];
     self.webView.delegate = self;
+    
     if (self.URL) {
         [self load];
     }
@@ -98,7 +98,7 @@
     self.webView.delegate = nil;
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
     
-    if (self.toolbarPreviouslyHidden && self.showsNavigationToolbar) {
+    if (self.isMovingFromParentViewController && self.toolbarPreviouslyHidden && self.showsNavigationToolbar) {
         [self.navigationController setToolbarHidden:YES animated:YES];
     }
 }
@@ -231,6 +231,16 @@
     [self.webView reload];
 }
 
+- (void)mayShowToolbar
+{
+    if (self.navigationController.toolbarHidden) {
+        self.toolbarPreviouslyHidden = YES;
+        if (self.showsNavigationToolbar) {
+            [self.navigationController setToolbarHidden:NO animated:YES];
+        }
+    }
+}
+
 #pragma mark - Button actions
 
 - (void)action:(id)sender
@@ -279,8 +289,13 @@
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
     [self finishLoad];
-    self.title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+    if (self.useWebsiteTitle){
+        self.title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+    }
     self.URL = self.webView.request.URL;
+    
+    [self mayShowToolbar];
+    
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
