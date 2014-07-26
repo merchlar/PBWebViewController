@@ -10,8 +10,6 @@
 
 @interface PBWebViewController () <UIPopoverControllerDelegate>
 
-@property (strong, nonatomic) UIWebView *webView;
-
 @property (strong, nonatomic) UIBarButtonItem *stopLoadingButton;
 @property (strong, nonatomic) UIBarButtonItem *reloadButton;
 @property (strong, nonatomic) UIBarButtonItem *backButton;
@@ -79,6 +77,8 @@
 {
     [super viewDidLoad];
     [self setupToolBarItems];
+    
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -296,6 +296,12 @@
     
     [self mayShowToolbar];
     
+    //NSLog(@"WebView Frame: %@", NSStringFromCGRect(webView.frame));
+    //NSLog(@"Scroll View Frame: %@", NSStringFromCGRect(webView.scrollView.frame));
+    
+    //CGPoint top = CGPointMake(0, 64);
+    //[self.webView.scrollView setFrame:CGRectMake(0, 64, self.webView.scrollView.frame.size.width, self.webView.scrollView.frame.size.height)];
+    
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
@@ -306,6 +312,8 @@
         [self.failedToLoadView setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
         [webView addSubview:self.failedToLoadView];
     }
+    
+    NSLog(@"ERROR Loading Page with URL: %@ failed. Error: %@", [self.URL description], [error description]);
     
     [self finishLoad];
 }

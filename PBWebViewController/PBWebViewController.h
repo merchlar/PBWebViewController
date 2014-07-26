@@ -15,6 +15,7 @@
  */
 @interface PBWebViewController : UIViewController <UIWebViewDelegate>
 
+@property (strong, nonatomic) UIWebView *webView;
 /**
  * The URL that will be loaded by the web view controller.
  * If there is one present when the web view appears, it will be automatically loaded, by calling `load`,
@@ -74,5 +75,6 @@
  * that it may have failed at first
  */
 - (void)reloadWebView;
+
 
 @end
